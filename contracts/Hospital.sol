@@ -3,13 +3,8 @@
 pragma solidity ^0.8.13;
 
 contract Hospital {
-	struct Claim{
-		string patientName;
-		string reasonForHospitalization;
-		uint32 amountPayable;
-	}
 	struct Queue{
-		mapping(uint32 => Claim) claims;
+		mapping(uint32 => address) claims;
 		uint32 first;
 		uint32 last;
 	}
@@ -23,9 +18,9 @@ contract Hospital {
 		claimed.last = 0;
 	}
 	
-	function addClaim(string calldata patientName, string calldata reasonForHospitalization, uint32 amountPayable) public restricted {
+	function addClaim(address userAddress) public restricted {
 		claimed.last++;
-		claimed.claims[claimed.last] = Claim({ patientName : patientName, reasonForHospitalization : reasonForHospitalization, amountPayable : amountPayable });
+		claimed.claims[claimed.last] = userAddress;
 	}
    
 	function removeClaim() public restricted (){
@@ -34,10 +29,10 @@ contract Hospital {
 		claimed.first++;
 	}
 
-	function firstClaim() public view returns(Claim memory){
+	function firstClaim() public view returns(address){
 		require(claimed.last >= claimed.first); // Queue is not empty.
-		Claim memory claim = claimed.claims[claimed.first];
-		return claim;
+		address userAddress = claimed.claims[claimed.first];
+		return userAddress;
 	}
 
 	modifier restricted() {
