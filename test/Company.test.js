@@ -20,13 +20,68 @@ describe('Company', () => {
         assert.ok(company.options.address);
     });
 
-    it('adding a claim', async () =>{
-        await company.methods.addClaim('Aditya','Intestine lol',20000).send({ from : accounts[0], gas : '1000000' });
-        const claimAdded = await company.methods.getRecentClaim().call();
-        // console.log(claimAdded.patientName);
+    it('has same company address', async () => {
+        const companyAddress = await company.methods.companyAddress().call();
+        assert.equal(accounts[0], companyAddress);
+    });
+
+    it('can be accessed by same user and adds a claim', async () =>{
+        await company.methods.addClaim('Aditya', 'Intestine', 20000).send({ from : accounts[0], gas : '1000000' });
+        const claimAdded = await company.methods.firstClaim().call();
         assert.equal(claimAdded.patientName,'Aditya');
-        assert.equal(claimAdded.reasonForHospitalization,'Intestine lol');
+        assert.equal(claimAdded.reasonForHospitalization,'Intestine');
         assert.equal(claimAdded.amountPayable,'20000');
+    });
+
+    it('can be accessed by same user and adds multiple claims', async () =>{
+        await company.methods.addClaim('Aditya', 'Intestine', 20000).send({ from : accounts[0], gas : '1000000' });
+        await company.methods.addClaim('Avinash', 'Stomach', 2000).send({ from : accounts[0], gas : '1000000' });
+        await company.methods.addClaim('Sharvan', 'Skin', 200000).send({ from : accounts[0], gas : '1000000' });
+        
+        claimAdded = await company.methods.firstClaim().call();
+        assert.equal(claimAdded.patientName,'Aditya');
+        assert.equal(claimAdded.reasonForHospitalization,'Intestine');
+        assert.equal(claimAdded.amountPayable,'20000');
+        await company.methods.removeClaim().send({ from : accounts[0], gas : '1000000' });
+
+        claimAdded = await company.methods.firstClaim().call();
+        assert.equal(claimAdded.patientName,'Avinash');
+        assert.equal(claimAdded.reasonForHospitalization,'Stomach');
+        assert.equal(claimAdded.amountPayable,'2000');
+        await company.methods.removeClaim().send({ from : accounts[0], gas : '1000000' });
+
+        claimAdded = await company.methods.firstClaim().call();
+        assert.equal(claimAdded.patientName,'Sharvan');
+        assert.equal(claimAdded.reasonForHospitalization,'Skin');
+        assert.equal(claimAdded.amountPayable,'200000');
+        await company.methods.removeClaim().send({ from : accounts[0], gas : '1000000' });
+    });
+
+    it('can not be accessed by different user', async () => {
+        try {
+            await company.methods.addClaim('Aditya', 'Intestine', 20000).send({ from : accounts[1], gas : '1000000' });
+            assert(false);
+        } catch (err) {
+            assert(err);
+        }
+    });
+
+    it('can not access empty queue(claimed)', async () => {
+        try {
+            await company.methods.firstClaim().call();
+            assert(false);
+        } catch (err) {
+            assert(err);
+        }
+    });
+
+    it('can not access empty queue(verified)', async () => {
+        try {
+            await company.methods.firstVerifiedClaim().call();
+            assert(false);
+        } catch (err) {
+            assert(err);
+        }
     });
 });
 

@@ -25,7 +25,7 @@ describe('User', () => {
         assert.equal(accounts[0], userAddress);
     });
 
-    it('can be accessed by same user', async () => {
+    it('can be accessed by same user and buys insurance', async () => {
         await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[0], gas : '1000000' });
         const insuranceBought = await user.methods.insuranceDetails().call();
 
@@ -35,7 +35,7 @@ describe('User', () => {
         assert.equal(insuranceBought.coinsurance, 80);
     });
 
-    it('can not be access by a different user', async () => {
+    it('can not be accessed by a different user', async () => {
         try {
             await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[1], gas : '1000000' });
             assert(false);
