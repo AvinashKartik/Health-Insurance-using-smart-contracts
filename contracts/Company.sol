@@ -36,26 +36,26 @@ contract Company{
 		verified.claims[verified.last] = Claim({ patientName : patientName, reasonForHospitalization : reasonForHospitalization, amountPayable : amountPayable });
 	}
 
-	function removeClaim() public restricted claimedNotEmpty (){
-		// require(claimed.last >= claimed.first); // Queue is not empty.
+	function removeClaim() public restricted (){
+		require(claimed.last >= claimed.first); // Queue is not empty.
 		delete claimed.claims[claimed.first];
 		claimed.first++;
 	}
 
-	function removeVerifiedClaim() public restricted verifiedNotEmpty (){
-		// require(verified.last >= verified.first); // Queue is not empty.
+	function removeVerifiedClaim() public restricted (){
+		require(verified.last >= verified.first); // Queue is not empty.
 		delete verified.claims[verified.first];
 		verified.first++;
 	}
 
-	function firstClaim() public claimedNotEmpty view returns(Claim memory){
-		// require(claimed.last >= claimed.first); // Queue is not empty.
+	function firstClaim() public view returns(Claim memory){
+		require(claimed.last >= claimed.first); // Queue is not empty.
 		Claim memory claim = claimed.claims[claimed.first];
 		return claim;
 	}
 
-	function firstVerifiedClaim() public verifiedNotEmpty view returns(Claim memory) {
-		// require(verified.last >= verified.first); // Queue is not empty.
+	function firstVerifiedClaim() public view returns(Claim memory) {
+		require(verified.last >= verified.first); // Queue is not empty.
 		Claim memory verifiedClaim = verified.claims[verified.first];
 		return verifiedClaim;
 	}
@@ -64,14 +64,5 @@ contract Company{
 		require(msg.sender == companyAddress);
 		_;
 	}
-
-	modifier claimedNotEmpty() {
-		require(claimed.last >= claimed.first); // Queue is not empty.
-		_;
-	}
-
-	modifier verifiedNotEmpty() {
-		require(verified.last >= verified.first); // Queue is not empty.
-		_;
-	}
+	
 }
