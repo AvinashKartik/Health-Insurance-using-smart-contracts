@@ -36,20 +36,28 @@ contract Company{
 		verified.claims[verified.last] = Claim({ patientName : patientName, reasonForHospitalization : reasonForHospitalization, amountPayable : amountPayable });
 	}
 
-	function removeClaim() public restricted returns(Claim memory){
+	function removeClaim() public restricted (){
 		require(claimed.last >= claimed.first); // Queue is not empty.
-		Claim memory firstClaim = claimed.claims[claimed.first];
 		delete claimed.claims[claimed.first];
 		claimed.first++;
-		return firstClaim;
 	}
 
-	function removeVerifiedClaim() public restricted returns(Claim memory){
+	function removeVerifiedClaim() public restricted (){
 		require(verified.last >= verified.first); // Queue is not empty.
-		Claim memory firstVerifiedClaim = verified.claims[verified.first];
 		delete verified.claims[verified.first];
 		verified.first++;
-		return firstVerifiedClaim;
+	}
+
+	function firstClaim() public view returns(Claim memory){
+		require(claimed.last >= claimed.first); // Queue is not empty.
+		Claim memory claim = claimed.claims[claimed.first];
+		return claim;
+	}
+
+	function firstVerifiedClaim() public view returns(Claim memory) {
+		require(verified.last >= verified.first); // Queue is not empty.
+		Claim memory verifiedClaim = verified.claims[verified.first];
+		return verifiedClaim;
 	}
 
 	modifier restricted() {
