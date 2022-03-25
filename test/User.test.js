@@ -46,7 +46,7 @@ describe('User', () => {
 
     it('can not claim without buying insurance', async () => {
         try {
-            await user.methods.addClaim('Sharvan', 'teeth', 2000).send({ from : accounts[1], gas : '1000000' });
+            await user.methods.addClaim(accounts[2], 'Sharvan', 'teeth', 2000).send({ from : accounts[1], gas : '1000000' });
             assert(false);
         } catch(err) {
             assert(err);
@@ -55,19 +55,20 @@ describe('User', () => {
 
     it('can claim insurance', async () => {
         await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[0], gas : '1000000' });
-        await user.methods.addClaim('Sharvan', 'teeth', 2000).send({ from : accounts[0], gas : '1000000' });
+        await user.methods.addClaim(accounts[2], 'Sharvan', 'teeth', 2000).send({ from : accounts[0], gas : '1000000' });
 
         const claimAdded = await user.methods.getClaim().call();
-        assert.equal(claimAdded.patientName,'Sharvan');
-        assert.equal(claimAdded.reasonForHospitalization,'teeth');
-        assert.equal(claimAdded.amountPayable,'2000');
+        assert.equal(claimAdded.hospitalAddress, accounts[2]);
+        assert.equal(claimAdded.patientName, 'Sharvan');
+        assert.equal(claimAdded.cause, 'teeth');
+        assert.equal(claimAdded.amountPayable, '2000');
     });
 
     it('can not claim more than 1 insurance', async () => {
         try {
             await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[0], gas : '1000000' });
-            await user.methods.addClaim('Sharvan', 'teeth', 2000).send({ from : accounts[0], gas : '1000000' });
-            await user.methods.addClaim('Sharvan', 'skin', 20000).send({ from : accounts[0], gas : '1000000' });
+            await user.methods.addClaim(accounts[2], 'Sharvan', 'teeth', 2000).send({ from : accounts[0], gas : '1000000' });
+            await user.methods.addClaim(accounts[2], 'Sharvan', 'skin', 20000).send({ from : accounts[0], gas : '1000000' });
             assert(false);
         } catch(err) {
             assert(err);
@@ -76,14 +77,15 @@ describe('User', () => {
 
     it('can claim insurance after removing previous', async () => {
         await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[0], gas : '1000000' });
-        await user.methods.addClaim('Sharvan', 'skin', 20000).send({ from : accounts[0], gas : '1000000' });
+        await user.methods.addClaim(accounts[2], 'Sharvan', 'skin', 20000).send({ from : accounts[0], gas : '1000000' });
         await user.methods.removeClaim().send({ from : accounts[0], gas : '1000000' });;
-        await user.methods.addClaim('Sharvan', 'teeth', 2000).send({ from : accounts[0], gas : '1000000' });
+        await user.methods.addClaim(accounts[2], 'Sharvan', 'teeth', 2000).send({ from : accounts[0], gas : '1000000' });
 
         const claimAdded = await user.methods.getClaim().call();
-        assert.equal(claimAdded.patientName,'Sharvan');
-        assert.equal(claimAdded.reasonForHospitalization,'teeth');
-        assert.equal(claimAdded.amountPayable,'2000');
+        assert.equal(claimAdded.hospitalAddress, accounts[2]);
+        assert.equal(claimAdded.patientName, 'Sharvan');
+        assert.equal(claimAdded.cause, 'teeth');
+        assert.equal(claimAdded.amountPayable, '2000');
     });
 
     it('can not remove claim without claiming', async () => {

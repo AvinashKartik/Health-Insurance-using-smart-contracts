@@ -10,8 +10,9 @@ contract User {
         uint8 coinsurance;
     }
     struct Claim{
+        address hospitalAddress;
 		string patientName;
-		string reasonForHospitalization;
+		string cause;
 		uint32 amountPayable;
 	}
 
@@ -26,6 +27,7 @@ contract User {
     }
 
     function buyInsurance(address companyAddress, uint16 deductible, uint8 coinsurance) public restricted {
+        require(claimed == false);
         insuranceDetails = insurance({ isActive : true, companyAddress : companyAddress, deductible : deductible, coinsurance : coinsurance });
     }
     
@@ -33,10 +35,10 @@ contract User {
         insuranceDetails.isActive = false;
     }
 
-    function addClaim(string calldata patientName, string calldata reasonForHospitalization, uint32 amountPayable) public restricted {
+    function addClaim(address hospitalAddress, string calldata patientName, string calldata cause, uint32 amountPayable) public restricted {
         require(insuranceDetails.isActive = true);
 		require(claimed == false);
-		insuranceClaim = Claim({ patientName : patientName, reasonForHospitalization : reasonForHospitalization, amountPayable : amountPayable });
+		insuranceClaim = Claim({ hospitalAddress : hospitalAddress, patientName : patientName, cause : cause, amountPayable : amountPayable });
         claimed = true;
     }
 
