@@ -17,7 +17,16 @@ beforeEach(async () => {
 
 describe('Company', () => {
     it('deploys a contract', () => {
-        // assert.ok(company.options.address);
+        assert.ok(company.options.address);
+    });
+
+    it('adding a claim', async () =>{
+        await company.methods.addClaim('Aditya','Intestine lol',20000).send({ from : accounts[0], gas : '1000000' });
+        const claimAdded = await company.methods.getRecentClaim().call();
+        // console.log(claimAdded.patientName);
+        assert.equal(claimAdded.patientName,'Aditya');
+        assert.equal(claimAdded.reasonForHospitalization,'Intestine lol');
+        assert.equal(claimAdded.amountPayable,'20000');
     });
 });
 

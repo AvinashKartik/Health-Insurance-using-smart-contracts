@@ -31,6 +31,11 @@ contract Company{
 		claimed.claims[claimed.last] = Claim({ patientName : patientName, reasonForHospitalization : reasonForHospitalization, amountPayable : amountPayable });
 	}
 
+	function getRecentClaim() public view returns (Claim memory){
+		Claim memory recentClaim = claimed.claims[claimed.last];
+		return recentClaim;
+	}
+
 	function addVerifiedClaim(string calldata patientName, string calldata reasonForHospitalization, uint32 amountPayable) public restricted {
 		verified.last++;
 		verified.claims[verified.last] = Claim({ patientName : patientName, reasonForHospitalization : reasonForHospitalization, amountPayable : amountPayable });
