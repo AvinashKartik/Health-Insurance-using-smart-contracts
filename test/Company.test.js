@@ -57,9 +57,19 @@ describe('Company', () => {
         await company.methods.removeClaim().send({ from : accounts[0], gas : '1000000' });
     });
 
-    it('can not be accessed by different user', async () => {
+    it('can not be accessed by different user to add claims', async () => {
         try {
             await company.methods.addClaim('Aditya', 'Intestine', 20000).send({ from : accounts[1], gas : '1000000' });
+            assert(false);
+        } catch (err) {
+            assert(err);
+        }
+    });
+
+    it('can not be accessed by different user to remove claims', async () => {
+        try {
+            await company.methods.addClaim('Aditya', 'Intestine', 20000).send({ from : accounts[0], gas : '1000000' });
+            await company.methods.removeClaim().send({ from : accounts[1], gas : '1000000' });
             assert(false);
         } catch (err) {
             assert(err);
