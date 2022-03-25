@@ -22,24 +22,11 @@ describe('Company', () => {
 
     it('adding a claim', async () =>{
         await company.methods.addClaim('Aditya','Intestine lol',20000).send({ from : accounts[0], gas : '1000000' });
-        const claimAdded = await company.methods.firstClaim().call();
-
+        const claimAdded = await company.methods.getRecentClaim().call();
+        // console.log(claimAdded.patientName);
         assert.equal(claimAdded.patientName,'Aditya');
         assert.equal(claimAdded.reasonForHospitalization,'Intestine lol');
         assert.equal(claimAdded.amountPayable,'20000');
     });
-
-    it('adding multiple claims', async() =>{
-        await company.methods.addClaim('Aditya','Intestine lol',20000).send({ from : accounts[0], gas : '1000000' });
-        await company.methods.addClaim('Avi','Stomach lol',10000).send({ from : accounts[0], gas : '1000000' });
-        const claimAdded = await company.methods.firstClaim().call();
-
-        // console.log(claimAdded);
-        assert.equal(claimAdded.patientName,'Aditya');
-        assert.equal(claimAdded.reasonForHospitalization,'Intestine lol');
-        assert.equal(claimAdded.amountPayable,'20000');
-    });
-
-
 });
 
