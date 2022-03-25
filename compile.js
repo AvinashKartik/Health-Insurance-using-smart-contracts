@@ -7,6 +7,8 @@ const userPath = path.resolve(__dirname, 'contracts', 'User.sol');
 const userSource = fs.readFileSync(userPath, 'utf8');
 const companyPath = path.resolve(__dirname, 'contracts', 'Company.sol');
 const companySource = fs.readFileSync(companyPath, 'utf8');
+const hospitalPath = path.resolve(__dirname, 'contracts', 'Hospital.sol');
+const hospitalSource = fs.readFileSync(hospitalPath, 'utf8');
 
 var input = {
     language: 'Solidity',
@@ -16,6 +18,9 @@ var input = {
         },
         'Company.sol' : {
             content: companySource
+        },
+        'Hospital.sol' : {
+            content: hospitalSource
         }
     },
     settings: {
@@ -30,6 +35,7 @@ var input = {
 const output = JSON.parse(solc.compile(JSON.stringify(input)));
 const user = output.contracts['User.sol'].User;
 const company = output.contracts['Company.sol'].Company;
+const hospital = output.contracts['Hospital.sol'].Hospital;
 
 exports.getUser = () => {
     return user;
@@ -37,4 +43,8 @@ exports.getUser = () => {
 
 exports.getCompany = () => {
     return company;
+}
+
+exports.getHospital = () => {
+    return hospital;
 }

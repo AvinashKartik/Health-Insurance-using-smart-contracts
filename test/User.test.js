@@ -35,7 +35,7 @@ describe('User', () => {
         assert.equal(insuranceBought.coinsurance, 80);
     });
 
-    it('can not be accessed by a different user', async () => {
+    it('can not be accesses by a different user', async () => {
         try {
             await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[1], gas : '1000000' });
             assert(false);
