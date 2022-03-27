@@ -87,7 +87,7 @@ describe('Integration', () => {
         sendVerificationToUser = async (company) => {
             const userAddress = await company.methods.firstVerifiedClaim().call();
             const userOfClaim = await new web3.eth.Contract(abiUser, userAddress);
-            await userOfClaim.methods.removeClaim().send({ from : accounts[0], gas : '1000000' });
+            await userOfClaim.removeClaim().send({ from : accounts[0], gas : '1000000' });
             await company.methods.removeVerifiedClaim().send({ from : accounts[0], gas : '1000000' });
             assert.equal(userOfClaim.options.address, user.options.address);
         };
