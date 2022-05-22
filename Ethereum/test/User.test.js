@@ -26,7 +26,17 @@ describe('User', () => {
     });
 
     it('can be accessed by same user and buys insurance', async () => {
-        await user.methods.buyInsurance(accounts[1], 1000, 80).send({ from : accounts[0], gas : '1000000' });
+        const buyInsurance = async (user, address, dedeuctible, coinsurance) => {
+            await user.methods.buyInsurance(address, dedeuctible, coinsurance).send({ from : accounts[0], gas : '1000000' });
+        };
+        const calcTime = async () => {
+            const start = Date.now();
+            await buyInsurance(user, accounts[1], 1000, 80);
+            const end = Date.now()
+            const duration = end - start;
+            console.log("time : ", duration);
+        }
+        await calcTime();
         const insuranceBought = await user.methods.insuranceDetails().call();
 
         assert.equal(insuranceBought.isActive, true);

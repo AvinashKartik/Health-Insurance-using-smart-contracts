@@ -101,3 +101,27 @@ const transaction = async () => {
 
 }
 transaction();
+
+// const buyInsurance = async (user, address, dedeuctible, coinsurance) => {
+//     await user.methods.buyInsurance(address, dedeuctible, coinsurance).send({ from : accounts[0], gas : '1000000' });
+// };
+// const calcTime = async () => {
+//     const start = Date.now();
+//     await buyInsurance(user, accounts[1], 1000, 80);
+//     const end = Date.now()
+//     const duration = end - start;
+//     console.log("Time taken for buying insurance : ", duration, "ms");
+// }
+// await calcTime();
+
+// const getCoinsurance = async (user) => {
+//    return  await user.methods.insuranceDetails.call();
+// };
+// const calcTime2 = async () => {
+//     const start = Date.now();
+//     await getCoinsurance(user);
+//     const end = Date.now()
+//     const duration = end - start;
+//     console.log("Time taken for querrying insurance : ", duration, "ms");
+// }
+// await calcTime2();
